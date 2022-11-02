@@ -2,7 +2,7 @@
 % EE519 Assignment 3  %
 % NURAY GUL-130505009 %
 %---------------------%
-%% This script is finding LPC coefficients and gains for a speech signal
+%This script is finding LPC coefficients and gains for a speech signal
 % And it resynthesizes the speech by using these values %
 %%
 clear all;
@@ -10,33 +10,33 @@ clc;
 close all;
 [speech,fs,nbits] = wavread('word1Anger.wav'); % Read Mono speech
                                                  % fs=16000 Hertz
-%sound(speech,fs)    % Listen it                            
-%% Normalization
+% sound(speech,fs)    % Listen it                            
+% Normalization
 speech=(speech-mean(speech)./(max(abs((speech - mean(speech))))));%Normalize the signal
-%% Frame Properties
+% Frame Properties
 frame_dur=20; %20 ms
 FrameLen=frame_dur*fs/1000; %Length of frame
 y=mod(length(speech),FrameLen);% last frame's length
 m=length(speech);%length of speech
 bolum=(m-y)/FrameLen; % number of frames
-%% Applying Hamming Window 
+% Applying Hamming Window 
 win = hamming(FrameLen);
-%% LPC Order
+% LPC Order
 P=35;% P is the order of LPC and it calculated as 
      % P~Bandwidth(in KHz)*2+[2,3,4]
      % if BW=8 KHz P=2*8 +[2,3,4]=[18,19,20]
 pitchFrequency=[]; % pitch periods for each frames
 signalnew=[]; %resynthesized speech
 tson=[]; % time for resynthesized speech
-%% Loop 
+% Loop 
 for i=0:1:bolum-1
 speech1 = win.*speech((i)*FrameLen+1:(i+1)*FrameLen,1); %signal for one frame 
 tframe=(0:length(speech1)-1)/fs;
-%figure,plot(tframe,speech1)
-%title(['Frame ', num2str(i+1)])
-%% Calculation of LPC coefficient (A) and Gain (G)
+% figure,plot(tframe,speech1)
+% title(['Frame ', num2str(i+1)])
+% Calculation of LPC coefficient (A) and Gain (G)
 [A(:,i+1),G(i+1)] = lpc(speech1,P); 
-%% Pitch Detection
+% Pitch Detection
 % Clipping the signal to Pitch Detection
 speech2= clip_center(speech1);
 % Moddified Autocorrelation Function is used to compute Autocorrelation
